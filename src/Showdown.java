@@ -11,54 +11,38 @@ public class Showdown {
         this.setPlayers(players);
         this.setDeck(deck);
     }
-    public void updateAllPlayerName() {
+
+
+    public void startGame() {
+        // 每個玩家取名
         for (Player player : players) {
             // 沒有說是否檢查名稱重複
             player.nameHimself();
         }
-    }
 
-    public void shuffle() {
+        // 洗牌
         System.out.println("Shuffling");
         this.deck.shuffle();
-    }
 
-    public void drawCard() {
+        // 發牌
         System.out.println("Drawing Card");
         int count = 0;
         while (count < Constant.MAX_HAND_CARD_SIZE) {
             count++;
             for (Player player : this.players) {
-                 Card card = deck.drawCard();
-                 player.getHand().addCard(card);
+                Card card = deck.drawCard();
+                player.getHand().addCard(card);
             }
         }
-    }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
-    public void setTurn(Integer turn) {
-        this.turn = turn;
-    }
-
-    public void setDeck(Deck deck) {
-        this.deck = deck;
-    }
-
-    public void takeTurn() {
+        // 開始遊戲
         System.out.println("Game start!");
         while (this.turn < Constant.MAX_HAND_CARD_SIZE) {
             this.setTurn(this.turn + 1);
             System.out.printf("Turn %d started \n", this.turn);
             List<Card> showedCards = new ArrayList<>();
             for (Player player : players) {
-                // 模擬詢問是否要將換牌，若已經換過就不問
-                if (player.getExchangeCard() == null) {
-                    player.exchangeHands(players);
-                }
-                showedCards.add(player.show());
+                showedCards.add(player.takeTurn(players.stream().filter(p -> p.getName() != player.getName()).toList()));
             }
 
             Player turnWinner = null;
@@ -66,7 +50,7 @@ public class Showdown {
             for (int i = 0; i < showedCards.size(); i++) {
                 if (showedCards.get(i) == null) continue;
 
-                System.out.printf("Player %s showed %s-%s \n", players.get(i).getName(), showedCards.get(i).getSuit().name(), showedCards.get(i).getRank().name());
+                System.out.printf("Player %s showed %s \n", players.get(i).getName(), showedCards.get(i).showCardInfo());
                 if (maxCard == null || showedCards.get(i).getCardWeight() > maxCard.getCardWeight()) {
                     maxCard = showedCards.get(i);
                     turnWinner = players.get(i);
@@ -89,5 +73,17 @@ public class Showdown {
         }
 
         System.out.printf("The winner is %s", gameWinner.get().getName());
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void setTurn(Integer turn) {
+        this.turn = turn;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
     }
 }

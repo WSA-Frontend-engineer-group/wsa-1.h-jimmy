@@ -7,11 +7,8 @@ public class Main {
                 new AI(new Hand()),
                 new AI(new Hand()),
                 new AI(new Hand()),
-                new AI(new Hand())
+                new Human(new Hand())
         ), new Deck());
-        showdown.updateAllPlayerName();
-        showdown.shuffle();
-        showdown.drawCard();
-        showdown.takeTurn();
+        showdown.startGame();
     }
 }

@@ -1,5 +1,6 @@
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class AI extends Player {
     public AI(Hand hand) {
@@ -18,8 +19,16 @@ public class AI extends Player {
         if (this.getHand().getCards().size() == 0) {
             return null;
         }
-        Collections.shuffle(this.getHand().getCards());
-        return this.getHand().getCards().remove(0);
+
+        Integer selectedCardIndex = getRandomNumber(this.getHand().getCardSize());
+
+        Card selectedCard = this.getHand().getCards().get(selectedCardIndex);
+        List<Card> newCards = IntStream.range(0, this.getHand().getCardSize())
+                .filter(i -> i != selectedCardIndex)
+                .mapToObj(i -> this.getHand().getCards().get(i))
+                .toList();
+        this.getHand().setCards(newCards);
+        return selectedCard;
     }
 
     @Override
@@ -29,7 +38,10 @@ public class AI extends Player {
         }
 
         if (getRandomNumber(2) == 1) {
-            this.setExchangeCard(new ExchangeCard(this, players.get(getRandomNumber(players.size()))));
+            Player selectedPlayer = players.get(getRandomNumber(players.size()));
+
+            System.out.printf("%s exchange hand:  %s \n", this.getName(), selectedPlayer.getName());
+            this.setExchangeCard(new ExchangeCard(this, selectedPlayer));
         }
     }
 

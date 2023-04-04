@@ -20,4 +20,8 @@ public class Card {
     public Suit getSuit() {
         return suit;
     }
+
+    public String showCardInfo() {
+        return this.getSuit().name() + "-" + this.getRank().name();
+    }
 }

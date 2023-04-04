@@ -18,6 +18,14 @@ public abstract class Player {
     abstract Card show();
     abstract void exchangeHands(List<Player> assignedPlayer);
 
+    public Card takeTurn(List<Player> players) {
+        if (this.getExchangeCard() == null) {
+            // 詢問是否要將換牌，若已經換過就不問
+            this.exchangeHands(players);
+        }
+        return this.show();
+    }
+
     public void gainPoint(Integer addedPoint) {
         this.setPoint(this.point + addedPoint);
     }
